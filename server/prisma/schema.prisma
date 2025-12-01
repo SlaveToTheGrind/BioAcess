@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String?
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  rfids        Rfid[]
+  bombonas     Bombona[]
+}
+
+model Rfid {
+  id          Int      @id @default(autoincrement())
+  uid         String   @unique
+  label       String?
+  metadata    String?   // armazenar JSON como string e serializar no backend
+  active      Boolean  @default(true)
+  ownerId     Int?
+  lastSeenAt  DateTime?
+  createdAt   DateTime @default(now())
+  owner       User?    @relation(fields: [ownerId], references: [id])
+  bombona     Bombona? // relação inversa (definida em Bombona)
+  reads       ReadEvent[]
+}
+
+model Portal {
+  id         Int       @id @default(autoincrement())
+  name       String
+  location   String?
+  apiKey     String?   @unique
+  createdAt  DateTime  @default(now())
+  lastSeenAt DateTime?
+  reads      ReadEvent[]
+}
+
+model ReadEvent {
+  id         Int      @id @default(autoincrement())
+  uid        String
+  rfidId     Int?
+  portalId   Int
+  timestamp  DateTime @default(now())
+  rssi       Int?
+  antenna    String?
+  metadata   String?   // armazenar JSON como string
+  createdAt  DateTime @default(now())
+
+  rfid   Rfid?   @relation(fields: [rfidId], references: [id])
+  portal Portal  @relation(fields: [portalId], references: [id])
+
+  @@index([uid])
+  @@index([portalId, timestamp])
+}
+
+model Bombona {
+  id              Int       @id @default(autoincrement())
+  serial          String    @unique
+  label           String?
+  rfidId          Int?      @unique     // único para relação one-to-one com Rfid
+  ownerId         Int?                 // opcional: dono/usuário responsável
+  contents        String?
+  currentLocation String?
+  latitude        Float?    // coordenada latitude
+  longitude       Float?    // coordenada longitude
+  status          String?   // ex: "at_base", "in_transit", "at_portal"
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  rfid      Rfid?     @relation(fields: [rfidId], references: [id])
+  owner     User?     @relation(fields: [ownerId], references: [id])
+  movements Movement[]
+}
+
+model Movement {
+  id          Int      @id @default(autoincrement())
+  bombonaId   Int
+  type        String   // "checkout" | "checkin" | "portal_read" | "manual_read"
+  actor       String?
+  location    String?
+  timestamp   DateTime @default(now())
+  metadata    String?  // armazenar JSON como string
+
+  bombona Bombona @relation(fields: [bombonaId], references: [id])
+
+  @@index([bombonaId, timestamp])
+}

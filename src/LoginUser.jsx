@@ -1,42 +1,36 @@
+import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "./services/api";
 import "./App.css";
 
-const fakeApi = {
-  users: JSON.parse(localStorage.getItem("users")) || [],
-
-  login: ({ email, password }) =>
-    new Promise((resolve, reject) => {
-      // Atualiza a lista de usuários a cada tentativa de login
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      const user = users.find((u) => u.email === email && u.password === password);
-
-      setTimeout(() => {
-        user ? resolve(user) : reject("Usuário ou senha inválidos");
-      }, 500);
-    }),
-};
-
-export default function Login() {
+export default function LoginUser() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("");
+  const [messageType, setMessageType] = useState(null);
   const navigate = useNavigate();
 
   async function handleLogin(e) {
     e.preventDefault();
     setMessage("");
+    setMessageType(null);
 
     try {
-      const user = await fakeApi.login({ email, password });
+      const resp = await loginUser({ email, password });
+      const { token, user } = resp.data;
+
+      // Armazenar token e usuário (em dev: localStorage; em produção prefira cookie HttpOnly)
+      localStorage.setItem("token", token);
       localStorage.setItem("loggedUser", JSON.stringify(user));
+
       setMessageType("success");
-      setMessage(`Bem-vindo, ${user.name}!`);
-      setTimeout(() => navigate("/dashboard"), 1500);
+      setMessage(`Bem-vindo, ${user.name || user.email}`);
+      setTimeout(() => navigate("/dashboard"), 800);
     } catch (err) {
+      const apiMessage = err?.response?.data?.message;
       setMessageType("error");
-      setMessage(err);
+      setMessage(apiMessage || "Erro ao autenticar");
     }
   }
 
@@ -62,12 +56,7 @@ export default function Login() {
       </form>
 
       {message && (
-        <p
-          style={{
-            color: messageType === "success" ? "green" : "red",
-            marginTop: "10px",
-          }}
-        >
+        <p style={{ color: messageType === "success" ? "green" : "red", marginTop: "10px" }}>
           {message}
         </p>
       )}

@@ -7,10 +7,26 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Node
+node_modules/
+dist/
+build/
+.env
+.env.local
+.vscode/
+.DS_Store
+npm-debug.log
+yarn-error.log
+
+# Prisma binary / runtime temp
+server/node_modules/.prisma/client/query_engine-*
+
+# Vite cache
+node_modules/.vite
+
+# OS
+Thumbs.db
+ehthumbs.db
 
 # Editor directories and files
 .vscode/*

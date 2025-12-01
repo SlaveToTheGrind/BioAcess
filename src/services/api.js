@@ -1,16 +1,57 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api", // ajuste conforme seu backend
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api",
 });
 
-// Interceptor para adicionar token automaticamente a cada requisição
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+export async function getBombonas() {
+  return api.get("/bombonas");
+}
+
+export async function createBombona(data) {
+  return api.post("/bombonas", data);
+}
+
+export async function assignRfidToBombona(bombonaId, rfidUid) {
+  return api.post(`/bombonas/${bombonaId}/assign-rfid`, { rfidUid });
+}
+
+export async function checkoutBombona(bombonaId, payload) {
+  return api.post(`/bombonas/${bombonaId}/checkout`, payload);
+}
+
+export async function checkinBombona(bombonaId, payload) {
+  return api.post(`/bombonas/${bombonaId}/checkin`, payload);
+}
+
+export async function loginUser(payload) {
+  return api.post("/login", payload);
+}
+
+export async function registerUser(payload) {
+  return api.post("/register", payload);
+}
+
+export async function getBombona(id) {
+  return api.get(`/bombonas/${id}`);
+}
+
+export async function getBombonaMovements(id, params = {}) {
+  return api.get(`/bombonas/${id}/movements`, { params });
+}
+
+export async function updateBombona(bombonaId, data) {
+  return api.patch(`/bombonas/${bombonaId}`, data);
+}
+
+export async function markRfidSeen(uid) {
+  return api.patch(`/rfids/${encodeURIComponent(uid)}/mark-seen`);
+}
 
 export default api;

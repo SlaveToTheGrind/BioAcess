@@ -1,60 +1,66 @@
-body {
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
-  margin: 0;
+/* Reset / layout */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background: #f5f7fb; color: #222; }
+
+/* AUTH (login / register) */
+.login-container,
+.register-container,
+.auth-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 48px auto;
+  padding: 22px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(20,30,50,0.06);
 }
 
 h2 {
-    color: rgb(15, 99, 172);
-    margin-bottom: 20px;
-    justify-content: center;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    margin-top: 20px;
+  color: rgb(15, 99, 172);
+  margin: 0 0 18px 0;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  text-align: center;
 }
 
-input {
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    width: 100%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+/* Form elements */
+input, select, textarea {
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #d7dbe0;
+  border-radius: 6px;
+  width: 100%;
+  display: block;
+  font-size: 14px;
 }
 
 button {
-    display: block;
-    width: 50%;
-    background-color: rgb(15, 99, 172);
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+  display: inline-block;
+  background-color: rgb(2, 37, 78);
+  color: white;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  min-width: 88px;
 }
 
-button:hover {
-    background-color: rgb(10, 78, 136);
+button:hover { background-color: rgb(4, 21, 169); }
+button.secondary {
+  background: #fff;
+  color: #fff3;
+  border: 1px solid #ddd;
 }
 
-p {
-    text-align: center;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    padding: 10px;
-}
+/* Global paragraphs */
+p { margin: 10px 0; font-size: 14px; color: black; }
 
+/* Dashboard layout */
 .dashboard-container {
   padding: 20px;
   font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 20px auto;
 }
 
 .dashboard-header {
@@ -63,10 +69,11 @@ p {
   align-items: center;
   background: #0a3d91;
   color: white;
-  padding: 10px 20px;
+  padding: 12px 18px;
   border-radius: 8px;
 }
 
+.dashboard-header p { margin: 0; font-size: 14px; }
 .dashboard-header button {
   background: #ff4444;
   color: white;
@@ -76,29 +83,105 @@ p {
   cursor: pointer;
 }
 
+/* Main content */
 .dashboard-main {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 20px;
-  margin-top: 20px;
+  grid-template-columns: 1fr 380px;
+  gap: 16px;
+  margin-top: 16px;
 }
 
-.equip-list {
-  background: #f8f8f8;
-  padding: 15px;
+/* Map container sizing */
+.leaflet-container {
+  width: 100% !important;
+  height: 600px !important;
+  border-radius: 10px;
+}
+
+/* Sidebar */
+aside {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Tabs on sidebar (Lista / Novo / Movimentos) */
+.sidebar-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sidebar-tabs button {
+  flex: 1;
+  padding: 8px;
+  min-width: 80px;
+  border-radius: 6px;
+  background: var(--tab-bg);
+  border: 1px solid #e3e6ea;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color var(--tab-transition), transform 100ms ease, box-shadow var(--tab-transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sidebar-tabs button.active {
+  background: var(--tab-active);
+  box-shadow: 0 4px 10px rgba(12, 64, 130, 0.06);
+}
+
+.sidebar-tabs button:active {
+  transform: translateY(1px);
+  background: var(--tab-active-pressed);
+}
+
+.sidebar-tabs button:hover {
+  background: #f7fbff;
+}
+
+/* Small action buttons used in list */
+.bombona-list-actions,
+.dashboard-sidebar-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.small-button {
+  padding: 6px 10px;
+  min-width: 72px;
+  height: 36px;
+  font-size: 13px;
+  white-space: nowrap;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background:#0a3d91;
+  cursor: pointer;
+}
+
+.small-button:hover { background:rgb(53, 70, 225) }
+
+/* Panels, lists and cards */
+.equip-list, .equip-map, section, .card {
+  background: #fff;
+  padding: 12px;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 3px 10px rgba(20,30,50,0.04);
 }
 
-.equip-map {
-  background: #f8f8f8;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+ul { list-style: none; padding: 0; margin: 0; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dashboard-main { grid-template-columns: 1fr; }
+  .leaflet-container { height: 420px !important; }
+  .dashboard-container { padding: 12px; }
 }
 
-@media (max-width: 768px) {
-  .dashboard-main {
-    grid-template-columns: 1fr;
-  }
+/* variáveis e transição para tabs */
+:root {
+  --tab-bg: #0a3d91;
+  --tab-active: rgb(53, 70, 225); /* cor atual — troque para a cor desejada */
+  --tab-active-pressed: grey; /* cor ao clicar (mais escura ou mais clara) */
+  --tab-transition: 180ms ease;
 }
